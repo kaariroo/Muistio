@@ -1,8 +1,28 @@
-<title>Etusivu</title>
-<h1>Etusivu</h1>
-<p>{{ message }}</p>
-<ul>
-{% for item in items %}
-<li> {{ item }}
+{% if session.username %}
+<p>Hi {{ session.username }} and welcome to...</p>
+
+<title>index</title>
+<h1>Continent of Mélamar</h1>
+
+<h2>Regions known: {{ counter }}</h2>
+
+{% for place in places %}
+<h3><a href="/region/{{ place.id }}">{{ place.name }}</a></h3>
+<p>
+{{ place.describtion}}
+</p></a>
 {% endfor %}
-</ul>
+<a href="/new">Add new area</a>
+<br>
+<a href="/logout">Log out</a>
+{% else %}
+<p>Login for some awesome roleplaying content</p>
+<form action="/login" method="POST">
+<p>Username:<br>
+<input type="text" name="username"></p>
+<p>Password:<br>
+<input type="password" name="password"></p>
+<input type="submit" value="Log in">
+</form>
+If you don't yet have a username, create one <a href="/register">here.</a>
+{% endif %}
