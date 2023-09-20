@@ -25,12 +25,11 @@ def login():
         return redirect("/")
     else:
         return render_template("error.html", message="Wrong username or password")
-    session["username"] = username
-    return redirect("/")
+    
 
 @app.route("/logout")
 def logout():
-    del session["username"]
+    users.logout()
     return redirect("/")
 
 @app.route("/new")
@@ -78,7 +77,7 @@ def register():
         password1 = request.form["password1"]
         password2 = request.form["password2"]
         if password1 != password2:
-            return render_template("error.html", message="Passwords are differen")
+            return render_template("error.html", message="Passwords are different")
         if users.register(username, password1):
             return redirect("/")
         else:
