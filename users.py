@@ -8,7 +8,7 @@ import app
 
 
 def login(username, password):
-    sql = text("SELECT id, password FROM users WHERE username=:username")
+    sql = text("SELECT id, password, usertype FROM users WHERE username=:username")
     result = app.db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -16,6 +16,7 @@ def login(username, password):
     else:
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
+            session["username"] = username
             return True
         else:
             return False
@@ -32,3 +33,13 @@ def register(username, password):
 
 def logout():
     del session["user_id"]
+
+def is_admin(username):
+    sql = text("SELECT usertype FROM users WHERE username=:username")
+    result = app.db.session.execute(sql, {"username":username})
+    usertype = result.fetchone()
+    session["usertype"] = usertype[0]
+    if usertype[0] == "admin":
+        return True
+    else:
+        return False

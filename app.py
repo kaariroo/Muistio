@@ -21,10 +21,13 @@ def index():
 def login():
     username = request.form["username"]
     password = request.form["password"]
+    if users.is_admin(username):
+        pass
     if users.login(username, password):
         return redirect("/")
     else:
         return render_template("error.html", message="Wrong username or password")
+    
     
 
 @app.route("/logout")
