@@ -1,5 +1,5 @@
 {% if session.user_id %}
-<p>Hi {{ session.username }} and welcome to...</p>
+<p>Hi {{ session.username }} {{session.usertype}} and welcome to...</p>
 
 <title>index</title>
 <h1>Continent of Mélamar</h1>
@@ -12,7 +12,14 @@
 {{ place.describtion}}
 </p></a>
 {% endfor %}
+{% if session.usertype == "admin" %}
 <a href="/new">Add new area</a>
+<br>
+{% endif %}
+{% for npc in npcs %}
+<h4>List of npcs in game:</h4>
+<h5><a href="/npc/{{ npc.id }}"> {{ npc.name }}</a></h5>
+{% endfor %}
 <br>
 <a href="/logout">Log out</a>
 {% else %}

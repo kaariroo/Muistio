@@ -1,0 +1,8 @@
+<h2>{{ npc.name }}</h2>
+
+<p>{{ npc.describtion }}</p>
+{% if session.usertype == "admin" %}
+<a href="/edit_npc/{{ npc.id }}">Edit</a><br>
+{% endif %}
+<br>
+<a href="/">Back</a>

@@ -1,0 +1,13 @@
+<form action="/send_npc" method="POST">
+    Name: <br>
+    <textarea name="name" rows="1" cols="40"></textarea>
+    <br>
+    Describtion: <br>
+    <textarea name="describtion" rows="10" cols="60"></textarea>
+    <input type="submit" value="Send">
+    Location: <br>
+    {% for place in places %}
+    <input type="radio" name="region" value="{{ place.id }}"> {{ place.name }}
+    {% endfor %}
+    </form>
+    

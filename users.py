@@ -21,11 +21,11 @@ def login(username, password):
         else:
             return False
 
-def register(username, password):
+def register(username, password, usertype):
     hash_value = generate_password_hash(password)
     try:
-        sql = text("INSERT INTO users (username,password) VALUES (:username,:password)")
-        app.db.session.execute(sql, {"username":username, "password":hash_value})
+        sql = text("INSERT INTO users (username,password,usertype) VALUES (:username,:password,:usertype)")
+        app.db.session.execute(sql, {"username":username, "password":hash_value, "usertype":usertype})
         app.db.session.commit()
     except:
         return False
