@@ -1,4 +1,21 @@
-<h2>{{ npc.name }}</h2>
+<style>
+    body {
+    margin-left: 500px;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+    .header {
+    background: rgb(88, 185, 88);
+    font-weight: bold;
+    padding: 1em 0.5em;
+    font-size: 1em;
+    
+}
+</style>
+
+<body>
+<p>Some info about this npc:</p>
+<div class="header"><h2>{{ npc.name }}</h2></div>
 
 <p>{{ npc.describtion }}</p>
 {% if session.usertype == "admin" %}
@@ -6,3 +23,4 @@
 {% endif %}
 <br>
 <a href="/">Back</a>
+</body>

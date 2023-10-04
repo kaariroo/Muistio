@@ -1,5 +1,7 @@
 <form action="/save_npc/{{ npc.id }}" method="POST">
-    Name: {{ npc.name }}<br>
+    Name:<br>
+    <textarea name="name" rows="1" cols="60">{{ npc.name }}</textarea>
+    <br>
     Describtion: <br>
     <textarea name="describtion" rows="10" cols="60">{{ npc.describtion }}</textarea>
     <input type="submit" value="Save">

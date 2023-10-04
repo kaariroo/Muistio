@@ -1,9 +1,42 @@
-<h2>{{ place.name }}</h2>
+<style>
+    body {
+    margin-left: 500px;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
 
+}
+
+    .npc {
+    top: 180;
+    left: 1250px;
+    position: absolute;
+}
+
+    .header {
+    background: rgb(88, 185, 88);
+    font-weight: bold;
+    padding: 1em 0.5em;
+    font-size: 1em;
+}
+
+</style>
+<body>
+<p>Some info about this region. You can also write your own notes. Don't worry, other users (even the dm) won't see those!</p>
+<div class="header">
+<h2>{{ place.name }}</h2>
+</div>
 <p>{{ place.describtion }}</p>
 {% if session.usertype == "admin" %}
 <a href="/edit/{{ place.id }}">Edit</a><br>
 {% endif %}
+<h3>Personal notes:</h3>
+{% for l_n in notes %}
+{{ l_n.note }}
+<a href="/edit_location_note/{{ l_n.id }}">Edit</a><br>
+{% endfor %}
+<a href="/new_location_note">Write a personal note about location</a><br>
+</body>
+<div class="npc">
 <h3>Npcs in this region:</h3>
 {% for npc in npcs %}
 <h5><a href="/npc/{{ npc.id }}"> {{ npc.name }}</a></h5>
@@ -12,5 +45,6 @@
 {% if session.usertype == "admin" %}
 <a href="/new_npc">Create new npc</a><br>
 {% endif %}
+</div>
 <br>
 <a href="/">Back</a>

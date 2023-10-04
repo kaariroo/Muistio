@@ -1,0 +1,10 @@
+<form action="/send_location_note" method="POST">
+    Note: <br>
+    <textarea name="note" rows="10" cols="60"></textarea>
+    <br>
+    <input type="submit" value="Send">
+    Location: <br>
+    {% for place in places %}
+    <input type="radio" name="region" value="{{ place.id }}"> {{ place.name }}
+    {% endfor %}
+    </form>

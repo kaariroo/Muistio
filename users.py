@@ -34,6 +34,9 @@ def register(username, password, usertype):
 def logout():
     del session["user_id"]
 
+def id():
+    return session["user_id"]
+
 def is_admin(username):
     sql = text("SELECT usertype FROM users WHERE username=:username")
     result = app.db.session.execute(sql, {"username":username})

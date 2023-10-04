@@ -1,25 +1,53 @@
+<style>
+    body {
+    margin-left: 500px;
+    max-width: 45em;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+
+}
+
+    .npc {
+    top: 180;
+    left: 1250px;
+    position: absolute;
+}
+
+    .header {
+    background: rgb(88, 185, 88);
+    font-weight: bold;
+    padding: 1em 0.5em;
+    font-size: 1em;
+}
+
+</style>
+
 {% if session.user_id %}
-<p>Hi {{ session.username }} {{session.usertype}} and welcome to...</p>
+<body>
+<p>Hi {{ session.username }} and welcome to...</p>
 
 <title>index</title>
+<div class="header">
 <h1>Continent of Mélamar</h1>
-
+</div>
 <h2>Regions known: {{ counter }}</h2>
 
 {% for place in places %}
 <h3><a href="/region/{{ place.id }}">{{ place.name }}</a></h3>
 <p>
 {{ place.describtion}}
-</p></a>
+</p>
 {% endfor %}
 {% if session.usertype == "admin" %}
 <a href="/new">Add new area</a>
-<br>
 {% endif %}
-{% for npc in npcs %}
+</body>
+<div class="npc">
 <h4>List of npcs in game:</h4>
-<h5><a href="/npc/{{ npc.id }}"> {{ npc.name }}</a></h5>
+{% for npc in npcs %}
+<a href="/npc/{{ npc.id }}"> {{ npc.name }}</a>
+<br>
 {% endfor %}
+</div>
 <br>
 <a href="/logout">Log out</a>
 {% else %}

@@ -1,5 +1,7 @@
 <form action="/save/{{ place.id }}" method="POST">
-    Name: {{ place.name }}<br>
+    Name:<br>
+    <textarea name="name" rows="1" cols="60">{{ place.name }}</textarea>
+    <br>
     Describtion: <br>
     <textarea name="describtion" rows="10" cols="60">{{ place.describtion }}</textarea>
     <input type="submit" value="Save">
