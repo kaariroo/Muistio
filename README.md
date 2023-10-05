@@ -10,3 +10,40 @@ Sovelluksen tämänhetkisiä ominaisuuksia:
 - Käyttäjä näkee etusivulla listan pelin kaikista npc hahmoista ja voi klikata sen auki, missä näkyy npc:n tiedot.
 - Käyttäjä näkee jokaisella alueella sen alueen npc:t ja voi klikata ne auki ja katsoa niiden tietoja.
 - Admin voi luoda uuden npc:n ja muokata vanhojen tietoja, sekä asettaa ne tietylle alueelle.
+
+## Kuinka käyttää ja testata sovellusta komentoriviltä
+**1)** Aluksi kopioi projekti koneellesi GitHubista
+
+
+**2)** Luo Pythonin virtuaaliympäristö projektikansioon:
+
+```bash
+python3 -m venv venv
+```
+
+**3)** Ja käynnistä virtuaaliympäristö:
+
+```bash
+source venv/bin/activate
+```
+
+**4)** Ympäristön riippuvuudet löytyvät tiedostosta [requirements.txt](./requirements.txt). 
+Nämä voit asentaa kerralla:
+
+```bash
+pip install -r requirements.txt
+```
+
+**5)** Koodi käyttää ympäristömuuttujia, jotka on tallennettu *.env* tiedostoon. GitHubiin tiedostoa ei ole kuitenkaan jaettu, mutta sieltä löytyy tiedosto [.env.example](./.env.example), josta voit nähdä mitä ympäristömuuttujia on käytetty. Voit nimetä tiedoston uudestaan *.env* ja päivittää rivin *DATABASE_URL=postgresql:///user*, niin että *user* on käyttäjätunuksesi/tietokannan nimi.
+
+**6)** Käytössä on Postgres-tietokanta. Skeema löytyy tiedostosta [schema.sql](./schema.sql). Pääset luomaan taulut tietokantaan:
+
+```bash
+psql < schema.sql
+```
+
+**7)** Tämän jälkeen pääset käynnistämään ohjelman virtuaaliympäristöstä:
+
+```bash
+flask run
+```
