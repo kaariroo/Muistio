@@ -4,7 +4,6 @@ from flask import redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
 from os import getenv
 import users
-from werkzeug.security import check_password_hash, generate_password_hash
 
 app = Flask(__name__)
 app.secret_key = getenv("SECRET_KEY")
@@ -56,6 +55,8 @@ def new_location_note():
 @app.route("/send_location_note", methods=["POST"])
 def send_location_note():
     note = request.form["note"]
+    if len(note) > 10000:
+        return render_template("error.html", error="Note is too long. You can try ro save it in multiple notes")
     region = request.form["region"]
     user = users.id()
     sql = text("INSERT INTO Location_notes (note,location_id,user_id) VALUES (:note,:region,:user_id)")
@@ -66,7 +67,11 @@ def send_location_note():
 @app.route("/send", methods=["POST"])
 def send():
     name = request.form["name"]
+    if len(name) > 50:
+        return render_template("error.html", error="Name is too long")
     describtion = request.form["describtion"]
+    if len(describtion) > 10000:
+        return render_template("error.html", error="Describiton is too long")
     sql = text("INSERT INTO Locations (name,describtion) VALUES (:name,:describtion)")
     db.session.execute(sql, {"name":name, "describtion":describtion})
     db.session.commit()
@@ -75,7 +80,11 @@ def send():
 @app.route("/send_npc", methods=["POST"])
 def send_npc():
     name = request.form["name"]
+    if len(name) > 50:
+        return render_template("error.html", error="Name is too long")
     describtion = request.form["describtion"]
+    if len(describtion) > 10000:
+        return render_template("error.html", error="Describiton is too long")
     region = request.form["region"]
     sql = text("INSERT INTO Npcs (name,describtion,location_id) VALUES (:name,:describtion,:region)")
     db.session.execute(sql, {"name":name, "describtion":describtion, "region":region})
@@ -106,7 +115,9 @@ def edit_location_note(id):
 @app.route("/save_location_note/<int:id>", methods=["POST"])
 def save_location_note(id):
     note = request.form["note"]
-    if len(note) > 0:
+    if len(note) > 10000:
+        return render_template("error.html", error="Note is too long. You can try ro save it in multiple notes")
+    elif len(note) > 0 and len(note) < 10000:
         sql = text("UPDATE Location_notes SET note=:note WHERE id=:id")
         db.session.execute(sql, {"id":id, "note":note})
         db.session.commit()
@@ -119,7 +130,11 @@ def save_location_note(id):
 @app.route("/save/<int:id>", methods=["POST"])
 def save(id):
     name = request.form["name"]
+    if len(name) > 50:
+        return render_template("error.html", error="Name is too long")
     describtion = request.form["describtion"]
+    if len(describtion) > 10000:
+        return render_template("error.html", error="Describiton is too long")
     sql = text("UPDATE Locations SET name=:name, describtion=:describtion WHERE id=:id")
     db.session.execute(sql, {"id":id, "name":name, "describtion":describtion})
     db.session.commit()
@@ -128,7 +143,11 @@ def save(id):
 @app.route("/save_npc/<int:id>", methods=["POST"])
 def save_npc(id):
     name = request.form["name"]
+    if len(name) > 50:
+        return render_template("error.html", error="Name is too long")
     describtion = request.form["describtion"]
+    if len(describtion) > 10000:
+        return render_template("error.html", error="Describiton is too long")
     sql = text("UPDATE Npcs SET name=:name, describtion=:describtion WHERE id=:id")
     db.session.execute(sql, {"id":id, "name":name, "describtion":describtion})
     db.session.commit()
