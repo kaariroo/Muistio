@@ -34,15 +34,14 @@ Nämä voit asentaa kerralla:
 pip install -r requirements.txt
 ```
 
-**5)** Koodi käyttää ympäristömuuttujia, jotka on tallennettu *.env* tiedostoon. GitHubiin tiedostoa ei ole kuitenkaan jaettu, mutta sieltä löytyy tiedosto [.env.example](./.env.example), josta voit nähdä mitä ympäristömuuttujia on käytetty. Voit nimetä tiedoston uudestaan *.env* ja päivittää rivin *DATABASE_URL=postgresql:///user*, niin että *user* on käyttäjätunuksesi/tietokannan nimi.
 
-**6)** Käytössä on Postgres-tietokanta. Skeema löytyy tiedostosta [schema.sql](./schema.sql). Pääset luomaan taulut tietokantaan:
+**5)** Käytössä on Postgres-tietokanta. Skeema löytyy tiedostosta [schema.sql](./schema.sql). Pääset luomaan taulut tietokantaan:
 
 ```bash
 psql < schema.sql
 ```
 
-**7)** Tämän jälkeen pääset käynnistämään ohjelman virtuaaliympäristöstä:
+**6)** Tämän jälkeen pääset käynnistämään ohjelman virtuaaliympäristöstä:
 
 ```bash
 flask run
