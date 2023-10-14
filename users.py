@@ -35,11 +35,14 @@ def id():
     return session["user_id"]
 
 def is_admin(username):
-    sql = text("SELECT usertype FROM users WHERE username=:username")
-    result = app.db.session.execute(sql, {"username":username})
-    usertype = result.fetchone()
-    session["usertype"] = usertype[0]
-    if usertype[0] == "admin":
-        return True
-    else:
+    try:
+        sql = text("SELECT usertype FROM users WHERE username=:username")
+        result = app.db.session.execute(sql, {"username":username})
+        usertype = result.fetchone()
+        session["usertype"] = usertype[0]
+        if usertype[0] == "admin":
+            return True
+        else:
+            return False
+    except:
         return False

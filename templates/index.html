@@ -29,6 +29,7 @@
 <div class="header">
 <h1>Continent of Mélamar</h1>
 </div>
+<img src={{picture}} alt="Map of Melamar" height="540" width="720"/>
 <h2>Regions known: {{ counter }}</h2>
 
 {% for place in places %}
@@ -47,6 +48,9 @@
 <a href="/npc/{{ npc.id }}"> {{ npc.name }}</a>
 <br>
 {% endfor %}
+{% if session.usertype == "admin" %}
+<a href="/new_npc">Create new npc</a><br>
+{% endif %}
 </div>
 <br>
 <a href="/logout">Log out</a>
