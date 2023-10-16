@@ -1,5 +1,5 @@
 from sqlalchemy.sql import text
-from flask import Flask, flash
+from flask import Flask
 from flask import url_for
 from flask import redirect, render_template, request, session
 from flask_sqlalchemy import SQLAlchemy
@@ -15,10 +15,10 @@ db = SQLAlchemy(app)
 
 @app.route("/")
 def index():
-    result = db.session.execute(text('SELECT id, name, describtion FROM Locations ORDER BY id'))
-    places = result.fetchall()
-    result = db.session.execute(text('SELECT id, name, describtion FROM Npcs ORDER BY id'))
-    npcs = result.fetchall()
+    table = "Locations"
+    places = operations.get_all(table)
+    table = "Npcs"
+    npcs = operations.get_all(table)
     picture = url_for('static', filename='melamar.jpg')
     return render_template("index.html", counter=len(places), places=places, npcs=npcs, picture=picture)
     
@@ -43,41 +43,41 @@ def new():
 
 @app.route("/new_npc")
 def new_npc():
-    result = db.session.execute(text('SELECT id, name, describtion FROM Locations ORDER BY id'))
-    places = result.fetchall()
+    table = "Locations"
+    places = operations.get_all(table)
     return render_template("new_npc.html", places=places)
 
 
 @app.route("/new_location_note")
 def new_location_note():
-    result = db.session.execute(text('SELECT id, name FROM Locations ORDER BY id'))
-    places = result.fetchall()
+    table = "Locations"
+    places = operations.get_all(table)
     return render_template("new_location_note.html", places=places)
 
 @app.route("/send_location_note", methods=["POST"])
 def send_location_note():
     note = request.form["note"]
-    if len(note) > 10000:
-        return render_template("error.html", error="Note is too long. You can try ro save it in multiple notes")
+    name_check = input_check.check_note(note)
+    if name_check != True:
+        return render_template("error.html", error=name_check)
     region = request.form["region"]
     user = users.id()
-    sql = text("INSERT INTO Location_notes (note,location_id,user_id) VALUES (:note,:region,:user_id)")
-    db.session.execute(sql, {"note":note, "user_id":user, "region":region})
-    db.session.commit()
+    operations.save_note(note, user, region)
     return redirect("/")
 
 @app.route("/send", methods=["POST"])
 def send():
-    try:
-        name = request.form["name"]
-        describtion = request.form["describtion"]
-        table = "Locations"
-        name_check = input_check.check_name_and_describtion(name, describtion)
-        if name_check != True:
-            return render_template("error.html", error=name_check)
-        operations.send(name, describtion, table)
-    except:
-        return render_template("error.html", error="Name already in use")
+    name = request.form["name"]
+    describtion = request.form["describtion"]
+    table = "Locations"
+    name_check = input_check.check_name_and_describtion(name, describtion)
+    if name_check != True:
+        return render_template("error.html", error=name_check)
+    name_free = input_check.check_if_name_in_use(name, table)
+    if name_free != True:
+        return render_template("error.html", error=name_free)
+    region = None
+    operations.send(name, describtion, table, region)
     return redirect("/")
 
 @app.route("/send_npc", methods=["POST"])
@@ -89,6 +89,9 @@ def send_npc():
         name_check = input_check.check_name_and_describtion(name, describtion)
         if name_check != True:
            return render_template("error.html", error=name_check)
+        name_free = input_check.check_if_name_in_use(name, table)
+        if name_free != True:
+            return render_template("error.html", error=name_free)
         region = request.form["region"]
         operations.send(name, describtion, table, region)
         return redirect("/")
@@ -134,10 +137,13 @@ def save_location_note(id):
 def save(id):
     name = request.form["name"]
     describtion = request.form["describtion"]
-    table = "Location"
+    table = "Locations"
     name_check = input_check.check_name_and_describtion(name, describtion)
     if name_check != True:
         return render_template("error.html", error=name_check)
+    name_free = input_check.check_if_name_in_use(name, table)
+    if name_free != True:
+        return render_template("error.html", error=name_free)
     operations.save(id, name, describtion, table)
     return redirect("/")
 
@@ -149,7 +155,21 @@ def save_npc(id):
     name_check = input_check.check_name_and_describtion(name, describtion)
     if name_check != True:
         return render_template("error.html", error=name_check)
+    name_free = input_check.check_if_name_in_use(name, table)
+    if name_free != True:
+        return render_template("error.html", error=name_free)
     operations.save(id, name, describtion, table)
+    return redirect("/")
+
+@app.route("/confirm_delete_npc/<int:id>")
+def confirm_delete_npc(id):
+    table = "Npcs"
+    npc = operations.get_one(id, table)
+    return render_template("delete_npc.html", npc=npc)
+
+@app.route("/delete_npc/<int:id>", methods=["POST"])
+def delete_npc(id):
+    operations.delete(id)
     return redirect("/")
 
 @app.route("/npc/<int:id>")
@@ -165,7 +185,7 @@ def region(id):
     npcs = operations.get_locations_npcs(id)
     user = users.id()
     notes = operations.get_notes(id, user)
-    return render_template("operations.html", place=place, npcs=npcs, notes=notes)
+    return render_template("location.html", place=place, npcs=npcs, notes=notes)
 
 @app.route("/register", methods=["GET", "POST"])
 def register():

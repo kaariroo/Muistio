@@ -20,6 +20,8 @@
 <p>{{ npc.describtion }}</p>
 {% if session.usertype == "admin" %}
 <a href="/edit_npc/{{ npc.id }}">Edit</a><br>
+<br>
+<a href="/confirm_delete_npc/{{ npc.id }}">Delete</a><br>
 {% endif %}
 <br>
 <a href="/">Back</a>

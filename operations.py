@@ -22,6 +22,19 @@ def save(id, name, describtion, table):
     app.db.session.commit()
     return True
 
+def save_note(note, user, region):
+    sql = text("INSERT INTO Location_notes (note,location_id,user_id) VALUES (:note,:region,:user_id)")
+    app.db.session.execute(sql, {"note":note, "user_id":user, "region":region})
+    app.db.session.commit()
+    return True
+
+def delete(id):
+    sql = text("DELETE FROM Npcs WHERE id=:id")
+    app.db.session.execute(sql, {"id":id})
+    app.db.session.commit()
+    return True
+
+
 def get_id(name):
     sql = text("SELECT id FROM Locations WHERE name=:name")
     result = app.db.session.execute(sql, {"name":name})
@@ -36,6 +49,13 @@ def get_one(id, table):
         sql = text("SELECT id, note FROM Location_notes WHERE id=:id")
     result = app.db.session.execute(sql, {"id":id})
     return result.fetchone()
+
+def get_all(table):
+    if table == "Locations":
+        result = app.db.session.execute(text('SELECT id, name, describtion FROM Locations ORDER BY id'))
+    elif table == "Npcs":
+        result = app.db.session.execute(text('SELECT id, name, describtion FROM Npcs ORDER BY id'))
+    return result.fetchall()
     
 def get_locations_npcs(id):
     sql = text('SELECT id, name FROM Npcs WHERE Npcs.location_id=:id ORDER BY id')
