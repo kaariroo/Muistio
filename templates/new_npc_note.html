@@ -1,5 +1,6 @@
-<form action="/send_location_note/{{ place.id }}" method="POST">
-    Note about {{ place.name }}: <br>
+<form action="/send_npc_note/{{ npc.id }}" method="POST">
+    Note for {{ npc.name }}: <br>
     <textarea name="note" rows="10" cols="60"></textarea>
     <br>
     <input type="submit" value="Send">
+    
