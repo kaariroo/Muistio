@@ -14,8 +14,7 @@ def send(name, describtion, table, region):
         app.db.session.commit()
     except:
         return "Sure you didn't choose a name already in use?"
-    return True
-
+    
 def save(id, name, describtion, table):
     try:
         if table == "Locations":
@@ -27,7 +26,6 @@ def save(id, name, describtion, table):
         app.db.session.commit()
     except:
         return "Sure you didn't choose a name already in use?"
-    return True
 
 def send_note(note, user, target, table):
     if table == "Locations":
@@ -36,7 +34,6 @@ def send_note(note, user, target, table):
         sql = text("INSERT INTO Npc_notes (note,npc_id,user_id) VALUES (:note,:target,:user_id)")
     app.db.session.execute(sql, {"note":note, "user_id":user, "target":target})
     app.db.session.commit()
-    return True
 
 def save_note(note_id, note, table):
     if table == "Location_note":
@@ -47,7 +44,6 @@ def save_note(note_id, note, table):
         sql = text("UPDATE Npc_notes SET note=:note WHERE id=:note_id")
         app.db.session.execute(sql, {"note_id":note_id, "note":note})
         app.db.session.commit()
-    return True
 
 def delete(id, table):
     if table == "Npcs":
@@ -61,8 +57,10 @@ def delete(id, table):
         sql = text("DELETE FROM Npc_notes WHERE id=:id")
         app.db.session.execute(sql, {"id":id})
         app.db.session.commit()
-    return True
-
+    elif table == "Location_notes":
+        sql = text("DELETE FROM Location_notes WHERE id=:id")
+        app.db.session.execute(sql, {"id":id})
+        app.db.session.commit()
 
 def get_id(name):
     sql = text("SELECT id FROM Locations WHERE name=:name")
@@ -74,7 +72,7 @@ def get_one(id, table):
         sql = text('SELECT id, name, describtion FROM Locations WHERE id=:id')
     elif table == "Npcs":
         sql = text("SELECT id, name, describtion FROM Npcs WHERE id=:id")
-    elif table == "Location_note":
+    elif table == "Location_notes":
         sql = text("SELECT id, note FROM Location_notes WHERE id=:id")
     elif table == "Npc_notes":
         sql = text("SELECT id, note FROM Npc_notes WHERE id=:id")

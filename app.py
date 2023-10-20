@@ -232,6 +232,12 @@ def confirm_delete_npc_note(npc_id):
     note = operations.get_one(npc_id, table)
     return render_template("delete_npc_note.html", note=note)
 
+@app.route("/confirm_delete_location_note/<int:location_id>")
+def confirm_delete_location_note(location_id):
+    table = "Location_notes"
+    note = operations.get_one(location_id, table)
+    return render_template("delete_location_note.html", note=note)
+
 @app.route("/delete_npc/<int:npc_id>", methods=["POST"])
 def delete_npc(npc_id):
     table = "Npcs"
@@ -241,5 +247,11 @@ def delete_npc(npc_id):
 @app.route("/delete_npc_note/<int:note_id>", methods=["POST"])
 def delete_npc_note(note_id):
     table = "Npc_notes"
+    operations.delete(note_id, table)
+    return redirect("/")
+
+@app.route("/delete_location_note/<int:note_id>", methods=["POST"])
+def delete_location_note(note_id):
+    table = "Location_notes"
     operations.delete(note_id, table)
     return redirect("/")

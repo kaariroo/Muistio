@@ -33,6 +33,7 @@
 {% for l_n in notes %}
 {{ l_n.note }}
 <a href="/edit_location_note/{{ l_n.id }}">Edit</a><br>
+<a href="/confirm_delete_location_note/{{ l_n.id }}">Delete</a><br>
 {% endfor %}
 <br>
 <a href="/new_location_note/{{ place.id }}">Write a personal note about location</a><br>
