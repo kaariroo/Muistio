@@ -1,9 +1,9 @@
+from os import getenv
 from sqlalchemy.sql import text
 from flask import Flask
 from flask import url_for
-from flask import redirect, render_template, request, session
+from flask import redirect, render_template, request
 from flask_sqlalchemy import SQLAlchemy
-from os import getenv
 import users
 import operations
 import input_check
@@ -21,7 +21,7 @@ def index():
     npcs = operations.get_all(table)
     picture = url_for('static', filename='melamar.jpg')
     return render_template("index.html", counter=len(places), places=places, npcs=npcs, picture=picture)
-    
+
 @app.route("/login",methods=["POST"])
 def login():
     username = request.form["username"]
@@ -29,8 +29,7 @@ def login():
     users.is_admin(username)
     if users.login(username, password):
         return redirect("/")
-    else:
-        return render_template("error.html", error="Wrong username or password")
+    return render_template("error.html", error="Wrong username or password")
 
 @app.route("/logout")
 def logout():
@@ -57,25 +56,24 @@ def register():
         if users.register(username, password1, usertype):
             users.is_admin(username)
             return redirect("/")
-        else:
-            return render_template("error.html", error="Registration failed")
-        
-@app.route("/npc/<int:id>")
-def npc(id):
-    table = "Npcs"
-    npc = operations.get_one(id, table)
-    user = users.id()
-    notes = operations.get_notes(id, user, table)
-    return render_template("npc.html", npc=npc, notes=notes)
+        return render_template("error.html", error="Registration failed")
 
-@app.route("/region/<int:id>")
-def region(id):
-    table = "Locations"
-    place = operations.get_one(id, table)
-    npcs = operations.get_locations_npcs(id)
+@app.route("/npc/<int:npc_id>")
+def npc(npc_id):
+    table = "Npcs"
+    npc_data = operations.get_one(npc_id, table)
     user = users.id()
-    notes = operations.get_notes(id, user, table)
-    return render_template("location.html", place=place, npcs=npcs, notes=notes)        
+    notes = operations.get_notes(npc_id, user, table)
+    return render_template("npc.html", npc=npc_data, notes=notes)
+
+@app.route("/region/<int:region_id>")
+def region(region_id):
+    table = "Locations"
+    place = operations.get_one(region_id, table)
+    npcs = operations.get_locations_npcs(region_id)
+    user = users.id()
+    notes = operations.get_notes(region_id, user, table)
+    return render_template("location.html", place=place, npcs=npcs, notes=notes)
 
 @app.route("/new")
 def new():
@@ -87,17 +85,17 @@ def new_npc():
     places = operations.get_all(table)
     return render_template("new_npc.html", places=places)
 
-@app.route("/new_location_note/<int:id>")
-def new_location_note(id):
+@app.route("/new_location_note/<int:region_id>")
+def new_location_note(region_id):
     table = "Locations"
-    place = operations.get_one(id, table)
+    place = operations.get_one(region_id, table)
     return render_template("new_location_note.html", place=place)
 
-@app.route("/new_npc_note/<int:id>")
-def new_npc_note(id):
+@app.route("/new_npc_note/<int:npc_id>")
+def new_npc_note(npc_id):
     table = "Npcs"
-    npc = operations.get_one(id, table)
-    return render_template("new_npc_note.html", npc=npc)
+    npc_data = operations.get_one(npc_id, table)
+    return render_template("new_npc_note.html", npc=npc_data)
 
 @app.route("/send", methods=["POST"])
 def send():
@@ -105,11 +103,11 @@ def send():
     describtion = request.form["describtion"]
     table = "Locations"
     name_check = input_check.check_name_and_describtion(name, describtion)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
-    region = None
-    result = operations.send(name, describtion, table, region)
-    if result != True:
+    location = None
+    result = operations.send(name, describtion, table, location)
+    if result is not True:
         return render_template("error.html", error=result)
     return redirect("/")
 
@@ -119,147 +117,129 @@ def send_npc():
     describtion = request.form["describtion"]
     table = "Npcs"
     name_check = input_check.check_name_and_describtion(name, describtion)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
     try:
-        region = request.form["region"]
+        location = request.form["region"]
     except:
-        return render_template("error.html", error="Choose a region") 
-    result = operations.send(name, describtion, table, region)
-    if result != True:
+        return render_template("error.html", error="Choose a region")
+    result = operations.send(name, describtion, table, location)
+    if result is not True:
         return render_template("error.html", error=result)
     return redirect("/")
  
-    
-@app.route("/send_location_note/<int:id>", methods=["POST"])
-def send_location_note(id):
+@app.route("/send_location_note/<int:region_id>", methods=["POST"])
+def send_location_note(region_id):
     note = request.form["note"]
     table = "Locations"
     name_check = input_check.check_note(note)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
     user = users.id()
-    operations.save_note(note, user, id, table)
+    operations.send_note(note, user, region_id, table)
     return redirect("/")
 
-@app.route("/send_npc_note/<int:id>", methods=["POST"])
-def send_npc_note(id):
+@app.route("/send_npc_note/<int:npc_id>", methods=["POST"])
+def send_npc_note(npc_id):
     note = request.form["note"]
     table = "Npcs"
     name_check = input_check.check_note(note)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
     user = users.id()
-    operations.save_note(note, user, id, table)
+    operations.send_note(note, user, npc_id, table)
     return redirect("/")
 
-@app.route("/edit/<int:id>")
-def edit(id):
+@app.route("/edit/<int:region_id>")
+def edit(region_id):
     table = "Locations"
-    place = operations.get_one(id, table)
+    place = operations.get_one(region_id, table)
     return render_template("edit.html", place=place)
 
-@app.route("/edit_npc/<int:id>")
-def edit_npc(id):
+@app.route("/edit_npc/<int:npc_id>")
+def edit_npc(npc_id):
     table = "Npcs"
-    npc = operations.get_one(id, table)
-    return render_template("edit_npc.html", npc=npc)
+    npc_data = operations.get_one(npc_id, table)
+    return render_template("edit_npc.html", npc=npc_data)
 
-@app.route("/edit_location_note/<int:id>")
-def edit_location_note(id):
+@app.route("/edit_location_note/<int:note_id>")
+def edit_location_note(note_id):
     table = "Location_note"
-    note = operations.get_one(id, table)
+    note = operations.get_one(note_id, table)
     return render_template("edit_location_note.html", note=note)
 
-@app.route("/edit_npc_note/<int:id>")
-def edit_npc_note(id):
+@app.route("/edit_npc_note/<int:npc_id>")
+def edit_npc_note(npc_id):
     table = "Npc_notes"
-    note = operations.get_one(id, table)
+    note = operations.get_one(npc_id, table)
     return render_template("edit_npc_note.html", note=note)
 
-@app.route("/save/<int:id>", methods=["POST"])
-def save(id):
+@app.route("/save/<int:region_id>", methods=["POST"])
+def save(region_id):
     name = request.form["name"]
     describtion = request.form["describtion"]
     table = "Locations"
     name_check = input_check.check_name_and_describtion(name, describtion)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
-    result = operations.save(id, name, describtion, table)
-    if result != True:
+    result = operations.save(region_id, name, describtion, table)
+    if result is not True:
         return render_template("error.html", error=result)
     return redirect("/")
 
-@app.route("/save_npc/<int:id>", methods=["POST"])
-def save_npc(id):
+@app.route("/save_npc/<int:npc_id>", methods=["POST"])
+def save_npc(npc_id):
     name = request.form["name"]
     describtion = request.form["describtion"]
     table = "Npcs"
     name_check = input_check.check_name_and_describtion(name, describtion)
-    if name_check != True:
+    if name_check is not True:
         return render_template("error.html", error=name_check)
-    result = operations.save(id, name, describtion, table)
-    if result != True:
+    result = operations.save(npc_id, name, describtion, table)
+    if result is not True:
         return render_template("error.html", error=result)
     return redirect("/")
 
-@app.route("/save_location_note/<int:id>", methods=["POST"])
-def save_location_note(id):
+@app.route("/save_location_note/<int:note_id>", methods=["POST"])
+def save_location_note(note_id):
+    table = "Location_note"
     note = request.form["note"]
     note_check = input_check.check_note(note)
-    if note_check == "delete":
-        sql = text("DELETE From Location_notes WHERE id=:id")
-        db.session.execute(sql, {"id":id, "note":note})
-        db.session.commit()
-    elif note_check != True:
+    if note_check is not True:
         return render_template("error.html", error=note_check)
-    else:
-        sql = text("UPDATE Location_notes SET note=:note WHERE id=:id")
-        db.session.execute(sql, {"id":id, "note":note})
-        db.session.commit()
+    operations.save_note(note_id, note, table)
     return redirect("/")
 
-@app.route("/save_npc_note/<int:id>", methods=["POST"])
-def save_npc_note(id):
+@app.route("/save_npc_note/<int:note_id>", methods=["POST"])
+def save_npc_note(note_id):
+    table = "Npc_note"
     note = request.form["note"]
     note_check = input_check.check_note(note)
-    if note_check == "delete":
-        sql = text("DELETE From Npc_notes WHERE id=:id")
-        db.session.execute(sql, {"id":id, "note":note})
-        db.session.commit()
-    elif note_check != True:
+    if note_check is not True:
         return render_template("error.html", error=note_check)
-    else:
-        sql = text("UPDATE Npc_notes SET note=:note WHERE id=:id")
-        db.session.execute(sql, {"id":id, "note":note})
-        db.session.commit()
+    operations.save_note(note_id, note, table)
     return redirect("/")
 
-@app.route("/confirm_delete_npc/<int:id>")
-def confirm_delete_npc(id):
+@app.route("/confirm_delete_npc/<int:npc_id>")
+def confirm_delete_npc(npc_id):
     table = "Npcs"
-    npc = operations.get_one(id, table)
-    return render_template("delete_npc.html", npc=npc)
+    npc_data = operations.get_one(npc_id, table)
+    return render_template("delete_npc.html", npc=npc_data)
 
-@app.route("/confirm_delete_npc_note/<int:id>")
-def confirm_delete_npc_note(id):
+@app.route("/confirm_delete_npc_note/<int:npc_id>")
+def confirm_delete_npc_note(npc_id):
     table = "Npc_notes"
-    note = operations.get_one(id, table)
+    note = operations.get_one(npc_id, table)
     return render_template("delete_npc_note.html", note=note)
 
-@app.route("/delete_npc/<int:id>", methods=["POST"])
-def delete_npc(id):
+@app.route("/delete_npc/<int:npc_id>", methods=["POST"])
+def delete_npc(npc_id):
     table = "Npcs"
-    operations.delete(id, table)
+    operations.delete(npc_id, table)
     return redirect("/")
 
-@app.route("/delete_npc_note/<int:id>", methods=["POST"])
-def delete_npc_note(id):
+@app.route("/delete_npc_note/<int:note_id>", methods=["POST"])
+def delete_npc_note(note_id):
     table = "Npc_notes"
-    operations.delete(id, table)
+    operations.delete(note_id, table)
     return redirect("/")
-
-
-
-
-

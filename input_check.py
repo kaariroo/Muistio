@@ -20,7 +20,7 @@ def check_note(note):
     if len(note) > 10000:
         return "Note too long"
     elif len(note) < 1:
-        return "delete"
+        return "Note can't be empty"
     else:
         return True
 

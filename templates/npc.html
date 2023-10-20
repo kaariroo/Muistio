@@ -20,7 +20,8 @@
 <p>{{ npc.describtion }}</p>
 {% if session.usertype == "admin" %}
 <a href="/edit_npc/{{ npc.id }}">Edit</a><br>
-{% endif %}
+<br>
+<a href="/confirm_delete_npc/{{ npc.id }}">Delete this npc</a><br>{% endif %}
 <br>
 <h3>Personal notes:</h3>
 {% for n_n in notes %}
@@ -30,10 +31,6 @@
 {% endfor %}
 <br>
 <a href="/new_npc_note/{{ npc.id }}">Write a personal note about npc</a><br>
-<br>
-{% if session.usertype == "admin" %}
-<a href="/confirm_delete_npc/{{ npc.id }}">Delete this npc</a><br>
-{% endif %}
 <br>
 <a href="/">Back</a>
 </body>

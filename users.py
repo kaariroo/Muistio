@@ -10,13 +10,11 @@ def login(username, password):
     user = result.fetchone()
     if not user:
         return False
-    else:
-        if check_password_hash(user.password, password):
-            session["user_id"] = user.id
-            session["username"] = username
-            return True
-        else:
-            return False
+    if check_password_hash(user.password, password):
+        session["user_id"] = user.id
+        session["username"] = username
+        return True
+    return False
 
 def register(username, password, usertype):
     hash_value = generate_password_hash(password)
@@ -42,7 +40,6 @@ def is_admin(username):
         session["usertype"] = usertype[0]
         if usertype[0] == "admin":
             return True
-        else:
-            return False
+        return False
     except:
         return False

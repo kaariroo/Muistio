@@ -1,5 +1,6 @@
-import app
 from sqlalchemy.sql import text
+import app
+
 
 
 def send(name, describtion, table, region):
@@ -28,13 +29,24 @@ def save(id, name, describtion, table):
         return "Sure you didn't choose a name already in use?"
     return True
 
-def save_note(note, user, target, table):
+def send_note(note, user, target, table):
     if table == "Locations":
         sql = text("INSERT INTO Location_notes (note,location_id,user_id) VALUES (:note,:target,:user_id)")
     elif table == "Npcs":
         sql = text("INSERT INTO Npc_notes (note,npc_id,user_id) VALUES (:note,:target,:user_id)")
     app.db.session.execute(sql, {"note":note, "user_id":user, "target":target})
     app.db.session.commit()
+    return True
+
+def save_note(note_id, note, table):
+    if table == "Location_note":
+        sql = text("UPDATE Location_notes SET note=:note WHERE id=:note_id")
+        app.db.session.execute(sql, {"note_id":note_id, "note":note})
+        app.db.session.commit()
+    elif table == "Npc_note":
+        sql = text("UPDATE Npc_notes SET note=:note WHERE id=:note_id")
+        app.db.session.execute(sql, {"note_id":note_id, "note":note})
+        app.db.session.commit()
     return True
 
 def delete(id, table):
