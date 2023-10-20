@@ -5,11 +5,12 @@ Sovelluksen tämänhetkisiä ominaisuuksia:
 - Käyttäjä voi kirjautua sisään ja ulos.
 - Käyttäjä näkee etusivulla listan pelissä käytetyistä alueista.
 - Käyttäjä voi avata alueen tiedot klikkaamalla aluetta etusivulta.
-- Käyttäjä voi luoda itselleen henkilökohtaisia muistiinpanoja, jotka eivät näy muille käyttäjille. Muistiinpanoja voi muokata ja jos sen tallettaa tyhjänä, se poistuu.
+- Käyttäjä voi luoda itselleen henkilökohtaisia muistiinpanoja, jotka eivät näy muille käyttäjille. Muistiinpanoja voi muokata ja poistaa.
 - Admin voi luoda uuden alueen ja muokata alueiden tietoja, niin että ne näkyvä kaikille.
 - Käyttäjä näkee etusivulla listan pelin kaikista npc hahmoista ja voi klikata sen auki, missä näkyy npc:n tiedot.
 - Käyttäjä näkee jokaisella alueella sen alueen npc:t ja voi klikata ne auki ja katsoa niiden tietoja.
-- Admin voi luoda uuden npc:n ja muokata vanhojen tietoja, sekä asettaa ne tietylle alueelle.
+- Käyttäjä voi luoda, muokata ja poistaa itselleen henkilökohtaisia muistiinpanoja npc:stä.
+- Admin voi luoda uuden npc:n ja muokata vanhojen tietoja, sekä asettaa ne tietylle alueelle, sekä poistaa npc:n, jolloin poistuvat myös kaikkien käyttäjien henkilökohtaiset muistiinpanot tästä npc:stä.
 
 ## Kuinka käyttää ja testata sovellusta komentoriviltä
 **1)** Aluksi kopioi projekti koneellesi GitHubista
