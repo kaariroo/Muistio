@@ -164,7 +164,7 @@ def edit_npc(npc_id):
 
 @app.route("/edit_location_note/<int:note_id>")
 def edit_location_note(note_id):
-    table = "Location_note"
+    table = "Location_notes"
     note = operations.get_one(note_id, table)
     return render_template("edit_location_note.html", note=note)
 
@@ -202,7 +202,7 @@ def save_npc(npc_id):
 
 @app.route("/save_location_note/<int:note_id>", methods=["POST"])
 def save_location_note(note_id):
-    table = "Location_note"
+    table = "Location_notes"
     note = request.form["note"]
     note_check = input_check.check_note(note)
     if note_check is not True:

@@ -7,7 +7,7 @@
     <input type="submit" value="Send">
     Location: <br>
     {% for place in places %}
-    <input type="radio" name="region" value="{{ place.id }}"> {{ place.name }}
+    <input type="radio" name="region" value="{{ place.id }}"> {{ place.name }}<br>
     {% endfor %}
     </form>
     

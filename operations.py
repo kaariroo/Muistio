@@ -14,6 +14,7 @@ def send(name, describtion, table, region):
         app.db.session.commit()
     except:
         return "Sure you didn't choose a name already in use?"
+    return True
     
 def save(id, name, describtion, table):
     try:
@@ -26,6 +27,7 @@ def save(id, name, describtion, table):
         app.db.session.commit()
     except:
         return "Sure you didn't choose a name already in use?"
+    return True
 
 def send_note(note, user, target, table):
     if table == "Locations":

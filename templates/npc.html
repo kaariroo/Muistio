@@ -26,7 +26,7 @@
 <h3>Personal notes:</h3>
 {% for n_n in notes %}
 {{ n_n.note }}
-<a href="/edit_npc_note/{{ n_n.id }}">Edit</a><br>
+<a href="/edit_npc_note/{{ n_n.id }}">Edit</a>
 <a href="/confirm_delete_npc_note/{{ n_n.id }}">Delete</a><br>
 {% endfor %}
 <br>
